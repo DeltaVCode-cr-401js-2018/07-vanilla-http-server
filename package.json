@@ -27,5 +27,6 @@
   },
   "dependencies": {
     "dotenv": "^6.0.0"
-  }
+  },
+  "description": "## Submission Instructions"
 }
