@@ -28,7 +28,24 @@ function requestHandler(req, res) {
       }
 
       if (req.method === 'GET' && req.parsedUrl.pathname === '/') {
-        html(res, '<html><body><h1>HOME</h1></body></html>');
+        html(res, `<!DOCTYPE html>
+        <html>
+          <head>
+            <title> cowsay </title>  
+          </head>
+          <body>
+           <header>
+             <nav>
+               <ul>
+                 <li><a href="/cowsay">cowsay</a></li>
+               </ul>
+             </nav>
+           <header>
+           <main>
+             <!-- project description -->
+           </main>
+          </body>
+        </html>`);
         return;
       }
 
