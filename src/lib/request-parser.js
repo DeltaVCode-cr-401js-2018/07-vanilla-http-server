@@ -23,9 +23,24 @@ module.exports = (request) => {
 
     request.on('end', () => {
       try {
-        request.body = text;
+        // https://nodejs.org/api/http.html#http_message_headers
+        // "Header names are lower-cased."
+        switch (request.headers['content-type']) {
+
+        case 'application/json':
+          request.body = JSON.parse(text);
+          break;
+
+        default:
+          request.body = text;
+          break;
+
+        }
+
         resolve(request);
       } catch(err) {
+        request.body = null;
+        request.text = text;
         reject(err);
       }
     });

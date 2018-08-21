@@ -55,6 +55,44 @@ describe('request-parser', () => {
           expect(req.body).toBe('abc123');
         });
     });
+
+    it('parses JSON body', () => {
+      var req = new FakeRequest('http://localhost:3000/fake', method);
+      req.headers['content-type'] = 'application/json';
+
+      var parser = requestParser(req);
+
+      // Need to emit after creating Promise but before .then()
+      req.emit('data', new Buffer('{"abc"'));
+      req.emit('data', new Buffer(':123}'));
+      req.emit('end');
+
+      return parser
+        .then(result => {
+          expect(result).toBe(req);
+          expect(req.body).toEqual({ abc: 123 });
+        });
+    });
+
+    it('sets request.text if JSON body has error', () => {
+      var req = new FakeRequest('http://localhost:3000/fake', method);
+      req.headers['content-type'] = 'application/json';
+
+      var parser = requestParser(req);
+
+      // Need to emit after creating Promise but before .then()
+      req.emit('data', new Buffer('{"abc"'));
+      req.emit('data', new Buffer(':123'));
+      req.emit('end');
+
+      return expect(parser)
+        .rejects.toThrow('JSON')
+        // Ensure req was left in consistent state
+        .then(() => {
+          expect(req.body).toBe(null);
+          expect(req.text).toBe('{"abc":123');
+        });
+    });
   });
 });
 
@@ -63,5 +101,6 @@ class FakeRequest extends EventEmitter {
     super();
     this.url = url;
     this.method = method;
+    this.headers = {};
   }
 }
