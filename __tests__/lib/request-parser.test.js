@@ -35,6 +35,27 @@ describe('request-parser', () => {
         expect(req.query.b).toBe('2');
       });
   });
+
+  const describeMethodsWithBody = describe.each(['POST', 'PUT', 'PATCH']);
+
+  describeMethodsWithBody('for %s request', method => {
+    it('parses plain text body', () => {
+      var req = new FakeRequest('http://localhost:3000/fake', method);
+
+      var parser = requestParser(req);
+
+      // Need to emit after creating Promise but before .then()
+      req.emit('data', new Buffer('abc'));
+      req.emit('data', new Buffer('123'));
+      req.emit('end');
+
+      return parser
+        .then(result => {
+          expect(result).toBe(req);
+          expect(req.body).toBe('abc123');
+        });
+    });
+  });
 });
 
 class FakeRequest extends EventEmitter {
