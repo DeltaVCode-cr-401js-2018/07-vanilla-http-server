@@ -42,8 +42,23 @@ function requestHandler(req, res) {
              </nav>
            <header>
            <main>
-             <!-- project description -->
+             <p>This is Dylan's vanilla http server project all about creating HTTP servers and handling HTTP requests!
            </main>
+          </body>
+        </html>`);
+        return;
+      }
+      if(req.method === 'GET' && req.parsedUrl.pathname === '/cowsay') {
+        html(res, `<!DOCTYPE html>
+        <html>
+          <head>
+            <title> cowsay </title>  
+          </head>
+          <body>
+            <h1> cowsay </h1>
+            <pre>
+              cowsay.say({text: req.query.text})
+            </pre>
           </body>
         </html>`);
         return;
