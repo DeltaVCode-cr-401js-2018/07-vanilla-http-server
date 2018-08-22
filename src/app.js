@@ -48,6 +48,8 @@ router.post('/api/hello', (req, res) => {
   });
 });
 
+require('./routes/api');
+
 function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.statusCode = statusCode;
   res.statusMessage = statusMessage;

@@ -42,4 +42,22 @@ describe('app', () => {
       .expect('Content-Type', 'text/html')
       .expect('Test Error');
   });
+
+  describe('api routes', () => {
+    it('can get /api/notes', () => {
+      return request(app)
+        .get('/api/notes')
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect([{ id: 1 }]);
+    });
+
+    it('can delete /api/notes?id=deleteme', () => {
+      return request(app)
+        .delete('/api/notes?id=deleteme')
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect({ message: `ID deleteme was deleted` });
+    });
+  });
 });
