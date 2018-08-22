@@ -5,6 +5,7 @@ const http = require('http');
 const requestParser = require('./lib/request-parser');
 
 const app = http.createServer(requestHandler);
+const cowsay = require('cowsay');
 module.exports = app;
 
 app.start = (port) =>
@@ -49,6 +50,7 @@ function requestHandler(req, res) {
         return;
       }
       if(req.method === 'GET' && req.parsedUrl.pathname === '/cowsay') {
+        let message = req.query.text?cowsay.say({text: req.query.text}):cowsay.say({text: 'I need something good to say!'});
         html(res, `<!DOCTYPE html>
         <html>
           <head>
@@ -56,11 +58,15 @@ function requestHandler(req, res) {
           </head>
           <body>
             <h1> cowsay </h1>
-            <pre>
-              cowsay.say({text: req.query.text})
-            </pre>
+            <pre>${message}</pre>
           </body>
         </html>`);
+        return;
+      }
+      if(req.method === 'GET' && req.parsedUrl.pathname === '/api/cowsay' && req.query.text) {
+        jsonify(res, {
+          content: cowsay.say(req.query),
+        });
         return;
       }
 
@@ -78,6 +84,22 @@ function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.setHeader('Content-Type', 'text/html');
   res.write(content);
   res.end();
+}
+
+function jsonify(res, object){
+  if(object){
+    res.statusCode = 200;
+    res.statusMessage = 'OK';
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify(object));
+    res.end();
+  } 
+  else {
+    res.statusCode = 400;
+    res.statusMessage = 'Invalid Request';
+    res.write('{"error": "invalid request: text query required"}');
+    res.end();
+  }
 }
 
 function notFound(res) {
