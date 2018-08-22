@@ -32,7 +32,12 @@ function requestHandler(req,res) {
         html(res, '<!DOCTYPE html><html><head><title> cowsay </title>  </head><body><header><nav><ul><li><a href="/cowsay">cowsay</a></li></ul></nav><header><main><!-- project description --></main></body></html>');
         return;
       }
-
+      if(req.method === 'GET' && req.parsedUrl.pathname === '/cowsay'){
+        let message = cowsay.say({text: req.query.text});
+        html(res, `<!DOCTYPE html><html><head><title> cowsay </title></head><body><h1> cowsay </h1><pre>${message}</pre></html>`);
+        return;
+      }
+      
       notFound(res);
     })
     .catch(err => {
