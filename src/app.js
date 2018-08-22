@@ -32,6 +32,14 @@ function requestHandler(req, res) {
         return;
       }
 
+      if (req.method === 'POST' &&
+        req.parsedUrl.pathname === '/api/hello') {
+        json(res, {
+          message: `Hello, ${req.body.name}!`,
+        });
+        return;
+      }
+
       notFound(res);
     })
     .catch(err => {
@@ -45,6 +53,13 @@ function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.statusMessage = statusMessage;
   res.setHeader('Content-Type', 'text/html');
   res.write(content);
+  res.end();
+}
+
+function json(res, object) {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.write(JSON.stringify(object));
   res.end();
 }
 

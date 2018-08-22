@@ -23,6 +23,18 @@ describe('app', () => {
       });
   });
 
+  it('responds with message for POST /api/hello', () => {
+    return request(app)
+      .post('/api/hello')
+      .send({ name: 'Keith' })
+      .expect(200)
+      .expect('Content-Type', 'application/json')
+      .expect(response => {
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe('Hello, Keith!');
+      });
+  });
+
   it('responds with 500 for /500', () => {
     return request(app)
       .post('/500')
