@@ -38,6 +38,10 @@ function requestHandler(req,res) {
         return;
       }
       if(req.method === 'GET' && req.parsedUrl.pahtname ==='/api/cowsay' && req.query.includes('text=')){
+        json(res,{
+          text: req.query.text,
+        });
+        return;
       }
       
       notFound(res);
