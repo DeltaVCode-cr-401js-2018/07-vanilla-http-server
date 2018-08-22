@@ -60,11 +60,18 @@ function html(res,content, statusCode =200, statusMessage = 'OK') {
 }
 
 function json(res, object){
+  if(object){
     res.statusCode = 200;
     res.statusMessage = 'OK';
     res.setHeader('Content-Type', 'application/json');
     res.write(JSON.stringify(object));
     res.end();
+  } else{
+    res.statusCode = 400;
+    res.statusMessage = 'Invalid Request';
+    res.write('{"error": "invalid request: text query required"}');
+    res.end();
+  }
 }
 
 function notFound(res){
