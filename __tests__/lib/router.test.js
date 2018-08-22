@@ -30,4 +30,35 @@ describe('router', () => {
 
     console.log('with routes', router);
   });
+
+  describe('route', () => {
+    it('calls route callback if method and path match', () => {
+      router.get('/test', (req, res) => {
+        console.log('/test', req, res);
+        res.statusCode = 200;
+      });
+
+      let req = {
+        method: 'GET',
+        url: 'http://localhost:1234/test',
+      };
+      let res = {};
+
+      return router.route(req, res)
+        .then(() => {
+          expect(res.statusCode).toBe(200);
+        });
+    });
+
+    it('rejects with 404 if method and path do not match', () => {
+      let req = {
+        method: 'GET',
+        url: 'http://localhost:3000/not-found',
+      };
+      let res = {};
+
+      return expect(router.route(req, res))
+        .rejects.toBe(404);
+    });
+  });
 });
