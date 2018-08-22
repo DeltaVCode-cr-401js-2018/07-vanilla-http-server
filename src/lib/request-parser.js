@@ -22,6 +22,8 @@ module.exports = (request) => {
     });
 
     request.on('end', () => {
+      request.text = text;
+
       try {
         // https://nodejs.org/api/http.html#http_message_headers
         // "Header names are lower-cased."
@@ -30,6 +32,12 @@ module.exports = (request) => {
         case 'application/json':
           request.body = JSON.parse(text);
           break;
+
+          /*
+        case 'text/csv':
+          request.body = CSVParser.parse(text);
+          break;
+        */
 
         default:
           request.body = text;
@@ -40,7 +48,6 @@ module.exports = (request) => {
         resolve(request);
       } catch(err) {
         request.body = null;
-        request.text = text;
         reject(err);
       }
     });

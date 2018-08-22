@@ -71,6 +71,7 @@ describe('request-parser', () => {
         .then(result => {
           expect(result).toBe(req);
           expect(req.body).toEqual({ abc: 123 });
+          expect(req.text).toMatch('123');
         });
     });
 
