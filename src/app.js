@@ -37,6 +37,8 @@ function requestHandler(req,res) {
         html(res, `<!DOCTYPE html><html><head><title> cowsay </title></head><body><h1> cowsay </h1><pre>${message}</pre></html>`);
         return;
       }
+      if(req.method === 'GET' && req.parsedUrl.pahtname ==='/api/cowsay' && req.query.includes('text=')){
+      }
       
       notFound(res);
     })
@@ -51,6 +53,14 @@ function html(res,content, statusCode =200, statusMessage = 'OK') {
   res.setHeader('Content-Type', 'text/html');
   res.write(content);
   res.end();
+}
+
+function json(res, object){
+    res.statusCode = 200;
+    res.statusMessage = 'OK';
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify(object));
+    res.end();
 }
 
 function notFound(res){
