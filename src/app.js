@@ -2,7 +2,7 @@
 
 const http = require('http');
 
-const requestParser = require('./lib/request-parser');
+const router = require('./lib/router');
 
 const app = http.createServer(requestHandler);
 module.exports = app;
@@ -21,32 +21,32 @@ app.start = (port) =>
 function requestHandler(req, res) {
   console.log(`${req.method} ${req.url}`);
 
-  requestParser(req)
-    .then(() => {
-      if (req.parsedUrl.pathname === '/500') {
-        throw new Error('Test Error');
-      }
-
-      if (req.method === 'GET' && req.parsedUrl.pathname === '/') {
-        html(res, '<html><body><h1>HOME</h1></body></html>');
-        return;
-      }
-
-      if (req.method === 'POST' &&
-        req.parsedUrl.pathname === '/api/hello') {
-        json(res, {
-          message: `Hello, ${req.body.name}!`,
-        });
-        return;
-      }
-
-      notFound(res);
-    })
+  router.route(req, res)
     .catch(err => {
+      // router rejects with 404 for not found
+      if (err === 404) {
+        notFound(res);
+        return;
+      }
+
       console.error(err);
       html(res, err.message, 500, 'Internal Server Error');
     });
 }
+
+router.post('/500', (req, res) => {
+  throw new Error('Test Error');
+});
+
+router.get('/', (req, res) => {
+  html(res, '<html><body><h1>HOME</h1></body></html>');
+});
+
+router.post('/api/hello', (req, res) => {
+  json(res, {
+    message: `Hello, ${req.body.name}!`,
+  });
+});
 
 function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.statusCode = statusCode;
