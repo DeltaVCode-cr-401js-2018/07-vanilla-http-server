@@ -69,6 +69,12 @@ function requestHandler(req, res) {
         });
         return;
       }
+      if(req.method === 'POST' && req.parsedUrl.pathname === '/api/cowsay' && req.query.text) {
+        jsonify(res, {
+          content: cowsay.say(req.query),
+        });
+        return;
+      }
 
       notFound(res);
     })
