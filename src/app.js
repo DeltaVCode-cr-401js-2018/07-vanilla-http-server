@@ -33,7 +33,7 @@ function requestHandler(req,res) {
         return;
       }
       if(req.method === 'GET' && req.parsedUrl.pathname === '/cowsay'){
-        let message = cowsay.say({text: req.query.text});
+        let message = req.query.text?cowsay.say({text: req.query.text}):cowsay.say({text: 'I need something good to say!'});
         html(res, `<!DOCTYPE html><html><head><title> cowsay </title></head><body><h1> cowsay </h1><pre>${message}</pre></html>`);
         return;
       }
