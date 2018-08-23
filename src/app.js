@@ -37,7 +37,7 @@ function requestHandler(req,res) {
         html(res, `<!DOCTYPE html><html><head><title> cowsay </title></head><body><h1> cowsay </h1><pre>${message}</pre></html>`);
         return;
       }
-      if(req.method === 'GET' && req.parsedUrl.pahtname ==='/api/cowsay' && req.query.includes('text=')){
+      if(req.method === 'GET' && req.parsedUrl.pathname ==='/api/cowsay'){
         json(res,{
           text: req.query.text,
         });
@@ -60,7 +60,7 @@ function html(res,content, statusCode =200, statusMessage = 'OK') {
 }
 
 function json(res, object){
-  if(object){
+  if(object!=={}){
     res.statusCode = 200;
     res.statusMessage = 'OK';
     res.setHeader('Content-Type', 'application/json');
