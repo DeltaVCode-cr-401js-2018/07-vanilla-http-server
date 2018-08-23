@@ -1,6 +1,7 @@
 'use strict';
 
 const http = require('http');
+const cowsay = require('cowsay');
 
 const requestParser = require('./lib/request-parser');
 
@@ -28,10 +29,21 @@ function requestHandler(req,res) {
         throw new Error('Test Error');
       }
       if(req.method === 'GET' && req.parsedUrl.pathname === '/'){
-        html(res, '<html><body><h1>HOME</h1></body></html>');
+        html(res, '<!DOCTYPE html><html><head><title> cowsay </title>  </head><body><header><nav><ul><li><a href="/cowsay">cowsay</a></li></ul></nav><header><main><!-- project description --></main></body></html>');
         return;
       }
-
+      if(req.method === 'GET' && req.parsedUrl.pathname === '/cowsay'){
+        let message = req.query.text?cowsay.say({text: req.query.text}):cowsay.say({text: 'I need something good to say!'});
+        html(res, `<!DOCTYPE html><html><head><title> cowsay </title></head><body><h1> cowsay </h1><pre>${message}</pre></html>`);
+        return;
+      }
+      if(req.method === 'GET' && req.parsedUrl.pathname ==='/api/cowsay'){
+        json(res,{
+          text: req.query.text,
+        });
+        return;
+      }
+      
       notFound(res);
     })
     .catch(err => {
@@ -45,6 +57,21 @@ function html(res,content, statusCode =200, statusMessage = 'OK') {
   res.setHeader('Content-Type', 'text/html');
   res.write(content);
   res.end();
+}
+
+function json(res, object){
+  if(object!=={}){
+    res.statusCode = 200;
+    res.statusMessage = 'OK';
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify(object));
+    res.end();
+  } else{
+    res.statusCode = 400;
+    res.statusMessage = 'Invalid Request';
+    res.write('{"error": "invalid request: text query required"}');
+    res.end();
+  }
 }
 
 function notFound(res){
