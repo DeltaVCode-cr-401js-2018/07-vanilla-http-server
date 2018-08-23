@@ -59,7 +59,7 @@ module.exports = FilesystemStorage;
 // readFilePromise(path).then(...)
 function promisify (asyncFunction) {
   return (...args) =>
-    new Promise((reject, resolve) => {
+    new Promise((resolve, reject) => {
       asyncFunction(...args, (err, result) => {
         if (err) { reject(err); }
         else { resolve(result); }
