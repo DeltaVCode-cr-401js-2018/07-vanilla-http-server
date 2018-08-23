@@ -3,6 +3,7 @@
 const request = require('supertest');
 
 const app = require('../src/app');
+const Note = require('../src/models/note');
 
 describe('app', () => {
   it('responds with 404 for unknown path', () => {
@@ -45,11 +46,34 @@ describe('app', () => {
 
   describe('api routes', () => {
     it('can get /api/notes', () => {
-      return request(app)
-        .get('/api/notes')
-        .expect(200)
-        .expect('Content-Type', 'application/json')
-        .expect([{ id: 1 }]);
+      var notes = [
+        new Note({ title: 'test 1', content: 'uno' }),
+        new Note({ title: 'test 2', content: 'dos' }),
+        new Note({ title: 'test 3', content: 'tres' }),
+      ];
+
+      return Promise.all(
+        notes.map(note => note.save())
+      ).then(savedNotes => {
+        return request(app)
+          .get('/api/notes')
+          .expect(200)
+          .expect('Content-Type', 'application/json')
+          .expect(savedNotes);
+      });
+    });
+
+    it('can get /api/notes?id=...', () => {
+      var note = new Note({ title: 'save me', content: 'please' });
+
+      return note.save()
+        .then(saved => {
+          return request(app)
+            .get(`/api/notes?id=${saved.id}`)
+            .expect(200)
+            .expect('Content-Type', 'application/json')
+            .expect(saved);
+        });
     });
 
     it('can delete /api/notes?id=deleteme', () => {

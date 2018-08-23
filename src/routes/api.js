@@ -1,11 +1,20 @@
 'use strict';
 
 const router = require('../lib/router');
+const Note = require('../models/note');
 
 router.get('/api/notes', (req, res) => {
-  json(res, [
-    { id: 1 },
-  ]);
+  if (req.query.id) {
+    return Note.findById(req.query.id)
+      .then(note => {
+        json(res, note);
+      });
+  }
+
+  Note.fetchAll()
+    .then(notes => {
+      json(res, notes);
+    });
 });
 
 router.delete('/api/notes', (req, res) => {
