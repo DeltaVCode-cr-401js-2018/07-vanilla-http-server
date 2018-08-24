@@ -3,6 +3,7 @@
 const os = require('os');
 const fs = require('fs');
 const readFilePromise = promisify(fs.readFile);
+const readdirPromise = promisify(fs.readdir);
 const writeFilePromise = promisify(fs.writeFile);
 const uuid = require('uuid/v4');
 
@@ -12,6 +13,7 @@ class FilesystemStorage {
 
     // Ensure schema data dir exists
     this.path = `${os.tmpdir}/${this.schema}`;
+    console.log({ path: this.path });
     try {
       fs.mkdirSync(this.path);
     } catch (err) {
@@ -48,7 +50,23 @@ class FilesystemStorage {
           return Promise.reject(new Error(
             `Document with id "${id}" in schema "${this.schema}" not found`
           ));
+
         return Promise.reject(err);
+      });
+  }
+
+  getAll() {
+    return readdirPromise(this.path)
+      .then(files => {
+        console.log({ files });
+        return Promise.all(
+          // strip extension from id.json
+          files.map(file => this.get(file.substring(0, file.length-5)))
+        );
+      })
+      .catch(err => {
+        console.error(err);
+        return [];
       });
   }
 }
