@@ -1,5 +1,10 @@
 'use strict';
 
-const MemoryStorage = require('./memory');
-
-module.exports = MemoryStorage;
+switch (process.env.STORAGE) {
+case 'fs':
+  module.exports = require('./fs');
+  break;
+default:
+  module.exports = require('./memory');
+  break;
+}
