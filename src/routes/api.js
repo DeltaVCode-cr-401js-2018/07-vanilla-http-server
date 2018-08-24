@@ -17,6 +17,14 @@ router.get('/api/notes', (req, res) => {
     });
 });
 
+router.post('/api/notes', (req, res) => {
+  var newNote = new Note(req.body);
+  newNote.save()
+    .then(saved => {
+      json(res, saved);
+    });
+});
+
 router.delete('/api/notes', (req, res) => {
   json(res, {
     message: `ID ${req.query.id} was deleted`,

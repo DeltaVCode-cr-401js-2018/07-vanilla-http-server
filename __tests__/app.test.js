@@ -76,6 +76,20 @@ describe('app', () => {
         });
     });
 
+    it('can POST /api/notes to create note', () => {
+      return request(app)
+        .post('/api/notes')
+        .send({ title: 'Testing', content: 'It works!' })
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect(response => {
+          expect(response.body).toBeDefined();
+          expect(response.body.id).toBeDefined();
+          expect(response.body.title).toBe('Testing');
+          expect(response.body.content).toBe('It works!');
+        });
+    });
+
     it('can delete /api/notes?id=deleteme', () => {
       return request(app)
         .delete('/api/notes?id=deleteme')
