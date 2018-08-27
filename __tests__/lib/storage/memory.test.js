@@ -61,6 +61,6 @@ describe('MemoryStorage', () => {
         .then(results => {
           expect(results).toEqual(saved);
         });
-    })
+    });
   });
 });
