@@ -2,7 +2,7 @@
 
 const request = require('supertest');
 
-const app = require('../src/app');
+import app from '../src/app';
 import Note from '../src/models/note';
 
 describe('app', () => {
@@ -10,8 +10,7 @@ describe('app', () => {
     return request(app)
       .get('/404')
       .expect(404)
-      .expect('Content-Type', 'text/html')
-      .expect('Resource Not Found');
+      .expect('Content-Type', 'text/html; charset=utf-8');
   });
 
   it('responds with HTML for /', () => {
@@ -40,8 +39,7 @@ describe('app', () => {
     return request(app)
       .post('/500')
       .expect(500)
-      .expect('Content-Type', 'text/html')
-      .expect('Test Error');
+      .expect('Content-Type', 'text/html; charset=utf-8');
   });
 
   describe('api routes', () => {
@@ -74,6 +72,21 @@ describe('app', () => {
             .expect('Content-Type', 'application/json')
             .expect(saved);
         });
+    });
+
+    it('returns 400 for POST /api/notes without body', () => {
+      return request(app)
+        .post('/api/notes')
+        .set('Content-Type', 'application/json')
+        .send('this is not json')
+        .expect(400);
+    });
+
+    it('returns 400 for POST /api/notes with empty body', () => {
+      return request(app)
+        .post('/api/notes')
+        .send({})
+        .expect(400);
     });
 
     it('can POST /api/notes to create note', () => {

@@ -5,6 +5,8 @@ const noteStore = new Storage('notes');
 
 export default class Note {
   constructor(obj) {
+    if (!obj) throw new Error('obj is required!');
+
     this.title = obj.title;
     this.content = obj.content;
   }

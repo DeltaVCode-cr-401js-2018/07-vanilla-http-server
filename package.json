@@ -30,6 +30,7 @@
     "babel-eslint": "^8.2.6",
     "babel-register": "^6.26.0",
     "dotenv": "^6.0.0",
+    "express": "^4.16.3",
     "uuid": "^3.3.2"
   }
 }

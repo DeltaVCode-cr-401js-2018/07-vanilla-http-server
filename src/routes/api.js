@@ -1,6 +1,10 @@
 'use strict';
 
-const router = require('../lib/router');
+import express from 'express';
+const router = express.Router();
+
+export default router;
+
 import Note from '../models/note';
 
 router.get('/api/notes', (req, res) => {
@@ -18,6 +22,12 @@ router.get('/api/notes', (req, res) => {
 });
 
 router.post('/api/notes', (req, res) => {
+  if (!req.body || !req.body.title) {
+    res.send(400);
+    res.end();
+    return;
+  }
+
   var newNote = new Note(req.body);
   newNote.save()
     .then(saved => {

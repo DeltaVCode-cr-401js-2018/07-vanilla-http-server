@@ -1,11 +1,10 @@
 'use strict';
 
-const http = require('http');
+import express from 'express';
+const app = express();
 
-const router = require('./lib/router');
-
-const app = http.createServer(requestHandler);
-module.exports = app;
+// Make app available for testing
+export default app;
 
 app.start = (port) =>
   new Promise((resolveCallback, rejectCallback) => {
@@ -18,37 +17,50 @@ app.start = (port) =>
     });
   });
 
-function requestHandler(req, res) {
+// NOTE: Typically this would be done immediately after creating the app
+// NOTE: Our requestHandler function is largely obsolete
+// NOTE: Express has a built-in 404 handler
+// NOTE: Express has a built-in 500 handler
+
+// This replaces the request-parser that was used in our router
+app.use(express.json());
+// if you want to handle normal HTML <form> POST
+// app.use(express.urlencoded({ extended: true }));
+
+// Log each request
+// TODO: learn about middleware!
+app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
+  next();
+});
 
-  router.route(req, res)
-    .catch(err => {
-      // router rejects with 404 for not found
-      if (err === 404) {
-        notFound(res);
-        return;
-      }
-
-      console.error(err);
-      html(res, err.message, 500, 'Internal Server Error');
-    });
-}
-
-router.post('/500', (req, res) => {
+app.post('/500', (req, res) => {
   throw new Error('Test Error');
 });
 
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   html(res, '<html><body><h1>HOME</h1></body></html>');
 });
 
-router.post('/api/hello', (req, res) => {
+app.post('/api/hello', (req, res) => {
   json(res, {
     message: `Hello, ${req.body.name}!`,
   });
 });
 
-require('./routes/api');
+// Note: previously this modified our global router
+// require('./routes/api');
+import router from './routes/api';
+app.use(router);
+
+// Log error then pass it through to default handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  next(err);
+});
+
+// Today we learned: function.length = number of parameters!
+// console.log(((req, res, next) => {}).length);
 
 function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.statusCode = statusCode;
@@ -62,13 +74,5 @@ function json(res, object) {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.write(JSON.stringify(object));
-  res.end();
-}
-
-function notFound(res) {
-  res.statusCode = 404;
-  res.statusMessage = 'Not Found';
-  res.setHeader('Content-Type', 'text/html');
-  res.write('Resource Not Found');
   res.end();
 }
