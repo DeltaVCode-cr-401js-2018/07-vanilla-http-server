@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/hello', (req, res) => {
-  json(res, {
+  res.json({
     message: `Hello, ${req.body.name}!`,
   });
 });
@@ -67,12 +67,5 @@ function html(res, content, statusCode = 200, statusMessage = 'OK') {
   res.statusMessage = statusMessage;
   res.setHeader('Content-Type', 'text/html');
   res.write(content);
-  res.end();
-}
-
-function json(res, object) {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify(object));
   res.end();
 }

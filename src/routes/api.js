@@ -11,7 +11,7 @@ import Note from '../models/note';
 router.get('/api/notes', (req, res) => {
   Note.fetchAll()
     .then(notes => {
-      json(res, notes);
+      res.json(notes);
     });
 });
 
@@ -26,7 +26,7 @@ router.post('/api/notes', (req, res) => {
   var newNote = new Note(req.body);
   newNote.save()
     .then(saved => {
-      json(res, saved);
+      res.json(saved);
     });
 });
 
@@ -34,19 +34,12 @@ router.post('/api/notes', (req, res) => {
 router.get('/api/notes/:id', (req, res) => {
   return Note.findById(req.params.id)
     .then(note => {
-      json(res, note);
+      res.json(note);
     });
 });
 
 router.delete('/api/notes/:id', (req, res) => {
-  json(res, {
+  res.json({
     message: `ID ${req.params.id} was deleted`,
   });
 });
-
-function json(res, object) {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify(object));
-  res.end();
-}

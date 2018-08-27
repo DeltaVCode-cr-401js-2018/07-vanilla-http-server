@@ -28,7 +28,7 @@ describe('app', () => {
       .post('/api/hello')
       .send({ name: 'Keith' })
       .expect(200)
-      .expect('Content-Type', 'application/json')
+      .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(response => {
         expect(response.body).toBeDefined();
         expect(response.body.message).toBe('Hello, Keith!');
@@ -56,7 +56,7 @@ describe('app', () => {
         return request(app)
           .get('/api/notes')
           .expect(200)
-          .expect('Content-Type', 'application/json')
+          .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(savedNotes);
       });
     });
@@ -69,7 +69,7 @@ describe('app', () => {
           return request(app)
             .get(`/api/notes/${saved.id}`)
             .expect(200)
-            .expect('Content-Type', 'application/json')
+            .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(saved);
         });
     });
@@ -77,7 +77,7 @@ describe('app', () => {
     it('returns 400 for POST /api/notes without body', () => {
       return request(app)
         .post('/api/notes')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json; charset=utf-8')
         .send('this is not json')
         .expect(400);
     });
@@ -94,7 +94,7 @@ describe('app', () => {
         .post('/api/notes')
         .send({ title: 'Testing', content: 'It works!' })
         .expect(200)
-        .expect('Content-Type', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(response => {
           expect(response.body).toBeDefined();
           expect(response.body.id).toBeDefined();
@@ -107,7 +107,7 @@ describe('app', () => {
       return request(app)
         .delete('/api/notes/deleteme')
         .expect(200)
-        .expect('Content-Type', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect({ message: `ID deleteme was deleted` });
     });
   });
