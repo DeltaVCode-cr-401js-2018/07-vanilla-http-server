@@ -1,6 +1,6 @@
 'use strict';
 
-const Storage = require('../../../src/lib/storage/memory');
+import Storage from '../../../src/lib/storage/memory';
 
 describe('MemoryStorage', () => {
   it('rejects saving non-object', () => {

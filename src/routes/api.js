@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('../lib/router');
-const Note = require('../models/note');
+import Note from '../models/note';
 
 router.get('/api/notes', (req, res) => {
   if (req.query.id) {

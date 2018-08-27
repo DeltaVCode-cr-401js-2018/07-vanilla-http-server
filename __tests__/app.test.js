@@ -3,7 +3,7 @@
 const request = require('supertest');
 
 const app = require('../src/app');
-const Note = require('../src/models/note');
+import Note from '../src/models/note';
 
 describe('app', () => {
   it('responds with 404 for unknown path', () => {

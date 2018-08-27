@@ -1,9 +1,9 @@
 'use strict';
 
-const Storage = require('../lib/storage');
+import Storage from '../lib/storage';
 const noteStore = new Storage('notes');
 
-class Note {
+export default class Note {
   constructor(obj) {
     this.title = obj.title;
     this.content = obj.content;
@@ -21,5 +21,3 @@ class Note {
     return noteStore.get(id);
   }
 }
-
-module.exports = Note;
