@@ -1,7 +1,7 @@
 'use strict';
 
-const uuid = require('uuid/v4');
-const Storage = require('../../../src/lib/storage/fs');
+import uuid from 'uuid/v4';
+import Storage from '../../../src/lib/storage/fs';
 
 describe('FileStorage', () => {
   it('rejects saving non-object', () => {

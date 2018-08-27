@@ -1,10 +1,18 @@
 'use strict';
 
+import Memory from './memory';
+import FileSystem from './fs';
+
+let Storage = null;
+
 switch (process.env.STORAGE) {
 case 'fs':
-  module.exports = require('./fs');
+  Storage = FileSystem;
   break;
 default:
-  module.exports = require('./memory');
+  Storage = Memory;
   break;
 }
+
+export default Storage;
+// module.exports = Storage
