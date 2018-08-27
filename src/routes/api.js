@@ -7,20 +7,15 @@ export default router;
 
 import Note from '../models/note';
 
+// Get all notes
 router.get('/api/notes', (req, res) => {
-  if (req.query.id) {
-    return Note.findById(req.query.id)
-      .then(note => {
-        json(res, note);
-      });
-  }
-
   Note.fetchAll()
     .then(notes => {
       json(res, notes);
     });
 });
 
+// Create a note
 router.post('/api/notes', (req, res) => {
   if (!req.body || !req.body.title) {
     res.send(400);
@@ -35,9 +30,17 @@ router.post('/api/notes', (req, res) => {
     });
 });
 
-router.delete('/api/notes', (req, res) => {
+// Get an individual note
+router.get('/api/notes/:id', (req, res) => {
+  return Note.findById(req.params.id)
+    .then(note => {
+      json(res, note);
+    });
+});
+
+router.delete('/api/notes/:id', (req, res) => {
   json(res, {
-    message: `ID ${req.query.id} was deleted`,
+    message: `ID ${req.params.id} was deleted`,
   });
 });
 

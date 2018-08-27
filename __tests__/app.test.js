@@ -61,13 +61,13 @@ describe('app', () => {
       });
     });
 
-    it('can get /api/notes?id=...', () => {
+    it('can get /api/notes/:id', () => {
       var note = new Note({ title: 'save me', content: 'please' });
 
       return note.save()
         .then(saved => {
           return request(app)
-            .get(`/api/notes?id=${saved.id}`)
+            .get(`/api/notes/${saved.id}`)
             .expect(200)
             .expect('Content-Type', 'application/json')
             .expect(saved);
@@ -103,9 +103,9 @@ describe('app', () => {
         });
     });
 
-    it('can delete /api/notes?id=deleteme', () => {
+    it('can delete /api/notes/deleteme', () => {
       return request(app)
-        .delete('/api/notes?id=deleteme')
+        .delete('/api/notes/deleteme')
         .expect(200)
         .expect('Content-Type', 'application/json')
         .expect({ message: `ID deleteme was deleted` });
