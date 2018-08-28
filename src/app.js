@@ -3,6 +3,8 @@
 import express from 'express';
 import morgan from 'morgan';
 
+import json404 from './lib/middleware/json-404';
+
 const app = express();
 
 // Make app available for testing
@@ -32,7 +34,7 @@ app.use(express.json());
 // Log each request
 app.use(morgan('dev'));
 
-app.post('/500', (req, res) => {
+app.get('/500', (req, res) => {
   throw new Error('Test Error');
 });
 
@@ -50,6 +52,8 @@ app.post('/api/hello', (req, res) => {
 // require('./routes/api');
 import router from './routes/api';
 app.use(router);
+
+app.use(json404);
 
 // Log error then pass it through to default handler
 app.use((err, req, res, next) => {

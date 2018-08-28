@@ -13,6 +13,15 @@ describe('app', () => {
       .expect('Content-Type', 'text/html; charset=utf-8');
   });
 
+  it('responds with JSON 404 for unknown path given Accept: application/json', () => {
+    return request(app)
+      .get('/404')
+      .set('Accept', 'application/json')
+      .expect(404)
+      .expect('Content-Type', 'application/json; charset=utf-8')
+      .expect({ error: 'Not Found' });
+  });
+
   it('responds with HTML for /', () => {
     return request(app)
       .get('/')
@@ -37,7 +46,7 @@ describe('app', () => {
 
   it('responds with 500 for /500', () => {
     return request(app)
-      .post('/500')
+      .get('/500')
       .expect(500)
       .expect('Content-Type', 'text/html; charset=utf-8');
   });
