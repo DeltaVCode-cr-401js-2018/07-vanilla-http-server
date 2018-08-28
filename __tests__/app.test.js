@@ -51,6 +51,17 @@ describe('app', () => {
       .expect('Content-Type', 'text/html; charset=utf-8');
   });
 
+  it('responds with JSON 500 for /500 with Accept: application/json', () => {
+    return request(app)
+      .get('/500')
+      .set('Accept', 'application/json')
+      .expect(500)
+      .expect('Content-Type', 'application/json; charset=utf-8')
+      .expect({
+        error: 'Test Error',
+      });
+  });
+
   describe('api routes', () => {
     it('can get /api/notes', () => {
       var notes = [

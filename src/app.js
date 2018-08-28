@@ -3,6 +3,7 @@
 import express from 'express';
 import morgan from 'morgan';
 
+import errorMiddleware from './lib/middleware/error';
 import json404 from './lib/middleware/json-404';
 
 const app = express();
@@ -56,10 +57,7 @@ app.use(router);
 app.use(json404);
 
 // Log error then pass it through to default handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  next(err);
-});
+app.use(errorMiddleware);
 
 // Today we learned: function.length = number of parameters!
 // console.log(((req, res, next) => {}).length);
