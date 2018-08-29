@@ -9,7 +9,7 @@ import Note from '../models/note';
 
 // Get all notes
 router.get('/api/notes', (req, res) => {
-  Note.fetchAll()
+  Note.find({})
     .then(notes => {
       res.json(notes);
     });

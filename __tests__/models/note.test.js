@@ -34,4 +34,8 @@ describe('note model', () => {
     return expect(note.save())
       .rejects.toBeDefined();
   });
+
+  // TODO: test Note.find()
+  // TODO: test Note.findById()
+  // TODO: test Note.remove() <= how does this work?
 });

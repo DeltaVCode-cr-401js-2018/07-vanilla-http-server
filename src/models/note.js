@@ -6,7 +6,8 @@ import mongoose, { Schema } from 'mongoose';
 const noteSchema = Schema({
   title: { type: String, required: true },
   content: { type: String },
-  created: { type: Date, required: true },
+  created: { type: Date, required: true, default: Date.now },
+  completed: { type: Boolean, required: true, default: false },
 });
 
 // If Mongoose already has note defined, use it as-is

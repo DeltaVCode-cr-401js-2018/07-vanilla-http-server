@@ -86,7 +86,13 @@ describe('app', () => {
           .get('/api/notes')
           .expect(200)
           .expect('Content-Type', 'application/json; charset=utf-8')
-          .expect(savedNotes);
+          .expect(({ body }) => {
+            expect(body.length).toBeGreaterThanOrEqual(savedNotes.length);
+
+            savedNotes.forEach(savedNote => {
+              expect(body.find(note => note._id === savedNote._id.toString())).toBeDefined();
+            });
+          });
       });
     });
 
@@ -96,10 +102,12 @@ describe('app', () => {
       return note.save()
         .then(saved => {
           return request(app)
-            .get(`/api/notes/${saved.id}`)
+            .get(`/api/notes/${saved._id}`)
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
-            .expect(saved);
+            .expect(({ body }) => {
+              expect(body._id).toBe(body._id.toString());
+            });
         });
     });
 
