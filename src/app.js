@@ -1,10 +1,16 @@
 'use strict';
 
 import express from 'express';
+import morgan from 'morgan';
+
+import errorMiddleware from './lib/middleware/error';
+import json404 from './lib/middleware/json-404';
+import modelFinder from './lib/middleware/models';
+
 const app = express();
 
 // Make app available for testing
-export default app;
+module.exports = app;
 
 app.start = (port) =>
   new Promise((resolveCallback, rejectCallback) => {
@@ -28,13 +34,9 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 
 // Log each request
-// TODO: learn about middleware!
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
+app.use(morgan('dev'));
 
-app.post('/500', (req, res) => {
+app.get('/500', (req, res) => {
   throw new Error('Test Error');
 });
 
@@ -48,16 +50,18 @@ app.post('/api/hello', (req, res) => {
   });
 });
 
+// Only populate req.Model for API requests
+app.use('/api/*', modelFinder);
+
 // Note: previously this modified our global router
 // require('./routes/api');
 import router from './routes/api';
 app.use(router);
 
+app.use(json404);
+
 // Log error then pass it through to default handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  next(err);
-});
+app.use(errorMiddleware);
 
 // Today we learned: function.length = number of parameters!
 // console.log(((req, res, next) => {}).length);

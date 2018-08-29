@@ -1,5 +1,7 @@
 'use strict';
 
+const debug = require('debug')('storage/fs');
+
 import { tmpdir } from 'os';
 import fs from 'fs';
 import uuid from 'uuid/v4';
@@ -15,7 +17,7 @@ export default class FilesystemStorage {
 
     // Ensure schema data dir exists
     this.path = `${tmpdir}/${this.schema}`;
-    console.log({ path: this.path });
+    debug({ path: this.path });
     try {
       fs.mkdirSync(this.path);
     } catch (err) {
@@ -60,14 +62,14 @@ export default class FilesystemStorage {
   getAll() {
     return readdirPromise(this.path)
       .then(files => {
-        console.log({ files });
+        debug({ files });
         return Promise.all(
           // strip extension from id.json
           files.map(file => this.get(file.substring(0, file.length-5)))
         );
       })
       .catch(err => {
-        console.error(err);
+        err(err);
         return [];
       });
   }
