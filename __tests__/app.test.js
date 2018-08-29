@@ -5,7 +5,16 @@ const request = require('supertest');
 import app from '../src/app';
 import Note from '../src/models/note';
 
+const mongoConnect = require('../src/util/mongo-connect');
+
+const MONGODB_URI = process.env.MONGODB_URI ||
+  'mongodb://localhost/401-2018-notes';
+
 describe('app', () => {
+  beforeAll(() => {
+    return mongoConnect(MONGODB_URI);
+  });
+
   it('responds with 404 for unknown path', () => {
     return request(app)
       .get('/404')
@@ -117,7 +126,7 @@ describe('app', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(response => {
           expect(response.body).toBeDefined();
-          expect(response.body.id).toBeDefined();
+          expect(response.body._id).toBeDefined();
           expect(response.body.title).toBe('Testing');
           expect(response.body.content).toBe('It works!');
         });

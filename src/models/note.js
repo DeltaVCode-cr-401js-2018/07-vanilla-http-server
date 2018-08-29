@@ -1,32 +1,18 @@
 'use strict';
 
-const debug = require('debug')('models/note');
+import mongoose, { Schema } from 'mongoose';
+// const { Schema } = mongoose;
 
-import Storage from '../lib/storage';
-const noteStore = new Storage('notes');
+const noteSchema = Schema({
+  title: { type: String, required: true },
+  content: { type: String },
+  created: { type: Date, required: true },
+});
 
-export default class Note {
-  constructor(obj) {
-    if (!obj) throw new Error('obj is required!');
-    debug('new Note', obj);
+// If Mongoose already has note defined, use it as-is
+const Note = mongoose.models.note ||
+  // Otherwise, create a new note schema
+  mongoose.model('note', noteSchema);
 
-    this.title = obj.title;
-    this.content = obj.content;
-  }
-
-  save() {
-    debug('save', this);
-    return noteStore.save(this);
-  }
-
-  static fetchAll() {
-    return noteStore.getAll().then(data => {
-      debug('fetchAll', data);
-      return data;
-    });
-  }
-
-  static findById(id) {
-    return noteStore.get(id);
-  }
-}
+// Export our note constructor
+export default Note;

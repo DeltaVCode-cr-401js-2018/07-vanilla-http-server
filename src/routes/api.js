@@ -23,7 +23,10 @@ router.post('/api/notes', (req, res) => {
     return;
   }
 
-  var newNote = new Note(req.body);
+  var newNote = new Note({
+    ...req.body,
+    created: new Date(),
+  });
   newNote.save()
     .then(saved => {
       res.json(saved);
