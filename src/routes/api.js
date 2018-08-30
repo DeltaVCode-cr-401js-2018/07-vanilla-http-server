@@ -28,7 +28,10 @@ router.post('/api/:model', (req, res, next) => {
   var newModel = new req.Model(req.body);
   newModel.save()
     .then(saved => {
-      res.json(saved);
+      return req.Model.findById(saved._id);
+    })
+    .then(found => {
+      res.json(found);
     })
     .catch(next);
 });

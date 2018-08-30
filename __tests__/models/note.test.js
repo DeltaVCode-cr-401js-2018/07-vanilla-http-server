@@ -1,6 +1,8 @@
 'use strict';
 
 import Note from '../../src/models/note';
+// Have to import so schema is available for ref
+import List from '../../src/models/list';
 
 const mongoConnect = require('../../src/util/mongo-connect');
 

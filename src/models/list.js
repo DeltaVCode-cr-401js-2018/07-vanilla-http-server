@@ -10,6 +10,11 @@ const listSchema = Schema({
   ],
 });
 
+listSchema.pre('findOne', function (next) {
+  this.populate('notes');
+  next();
+});
+
 const List = mongoose.model('list', listSchema);
 
 // For models middleware

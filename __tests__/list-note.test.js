@@ -33,7 +33,23 @@ describe('list/note interaction', () => {
         .send(noteBody)
         .expect(200)
         .expect(response => {
-          console.log(response.body);
+          let note = response.body;
+          console.log({ note });
+          expect(note.list).toBeDefined();
+          expect(note.list._id).toEqual(testList._id.toString());
+          expect(note.list.name).toEqual(testList.name);
+
+          return request(app)
+            .get(`/api/lists/${testList._id}`)
+            .expect(200)
+            .expect(response => {
+              let list = response.body;
+              console.log({ list });
+              expect(list).toBeDefined();
+              expect(list.notes).toBeDefined();
+              expect(list.notes.length).toBe(1);
+              expect(list.notes[0]._id).toEqual(note._id.toString());
+            });
         });
     });
   });
