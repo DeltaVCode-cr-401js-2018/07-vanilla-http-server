@@ -48,6 +48,7 @@ router.get('/api/:model/:id', (req, res, next) => {
     })
     .catch(err => {
       // Could not convert to ObjectId
+      // Note: this is now also handled by error middleware
       if (err.name === 'CastError') {
         // 404 Option 2:
         // Preferred for 404 because it lets the rest of the
@@ -61,9 +62,17 @@ router.get('/api/:model/:id', (req, res, next) => {
     });
 });
 
-router.delete('/api/:model/:id', (req, res) => {
-  // TODO: implement delete?
-  res.json({
-    message: `ID ${req.params.id} was deleted`,
-  });
+router.delete('/api/:model/:id', (req, res, next) => {
+  req.Model.findByIdAndRemove(req.params.id)
+    .then(removed => {
+      // Not found, continue on Express middleware pipeline
+      if (!removed) {
+        return next();
+      }
+
+      res.json({
+        message: `ID ${req.params.id} was deleted`,
+      });
+    })
+    .catch(next); // same as .catch(err => next(err));
 });
