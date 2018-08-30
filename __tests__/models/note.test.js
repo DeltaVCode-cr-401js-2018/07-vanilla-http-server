@@ -1,6 +1,8 @@
 'use strict';
 
 import Note from '../../src/models/note';
+// Have to import so schema is available for ref
+import List from '../../src/models/list';
 
 const mongoConnect = require('../../src/util/mongo-connect');
 
@@ -38,4 +40,39 @@ describe('note model', () => {
   // TODO: test Note.find()
   // TODO: test Note.findById()
   // TODO: test Note.remove() <= how does this work?
+  describe('findById', () => {
+    let testNote;
+    beforeEach(() => {
+      testNote = new Note({ title: 'Find Me!' });
+      return testNote.save();
+    });
+
+    it('can find by id that exists', () => {
+      return Note.findById(testNote._id)
+        .then(foundNote => {
+          expect(foundNote).toBeDefined();
+          expect(foundNote._id).toEqual(testNote._id);
+          expect(foundNote.title).toEqual(testNote.title);
+        });
+    });
+
+    it('can find by string id that exists', () => {
+      return Note.findById(testNote._id.toString())
+        .then(foundNote => {
+          expect(foundNote).toBeDefined();
+          expect(foundNote._id).toEqual(testNote._id);
+          expect(foundNote.title).toEqual(testNote.title);
+        });
+    });
+
+    it('reject given id that is invalid', () => {
+      return expect(Note.findById('oops'))
+        .rejects.toThrowError('Cast to ObjectId failed');
+    });
+
+    it('resolves with null given id that is valid but missing', () => {
+      return expect(Note.findById('deadbeefdeadbeefdeadbeef'))
+        .resolves.toBe(null);
+    });
+  });
 });

@@ -111,6 +111,18 @@ describe('app', () => {
         });
     });
 
+    it('returns 404 for GET /api/notes/:id with invalid id', () => {
+      return request(app)
+        .get('/api/notes/oops')
+        .expect(404);
+    });
+
+    it('returns 404 for GET /api/notes/:id with valid but missing id', () => {
+      return request(app)
+        .get('/api/notes/deadbeefdeadbeefdeadbeef')
+        .expect(404);
+    });
+
     it('returns 400 for POST /api/notes without body', () => {
       return request(app)
         .post('/api/notes')
@@ -123,7 +135,11 @@ describe('app', () => {
       return request(app)
         .post('/api/notes')
         .send({})
-        .expect(400);
+        .expect(400)
+        .expect(response => {
+          expect(response.body.message)
+            .toBe('note validation failed: title: Path `title` is required.');
+        });
     });
 
     it('can POST /api/notes to create note', () => {
@@ -140,12 +156,50 @@ describe('app', () => {
         });
     });
 
-    it('can delete /api/notes/deleteme', () => {
-      return request(app)
-        .delete('/api/notes/deleteme')
-        .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect({ message: `ID deleteme was deleted` });
+    describe('DELETE /api/notes/:id', () => {
+      let testNote;
+      beforeEach(() => {
+        testNote = new Note({ title: 'Delete Me' });
+        return testNote.save()
+          .then(() => {
+            return request(app)
+              .get(`/api/notes/${testNote._id}`)
+              .expect(200)
+              .expect(response => {
+                expect(response.body._id).toEqual(testNote._id.toString());
+              });
+          });
+      });
+
+      it('returns 200 with JSON for successful delete', () => {
+        let resourcePath = `/api/notes/${testNote._id}`;
+        return request(app)
+          .delete(resourcePath)
+          .expect(200)
+          .expect('Content-Type', 'application/json; charset=utf-8')
+          .expect({ message: `ID ${testNote._id} was deleted` })
+          .expect(() => {
+            console.log('resource deleted! ' + resourcePath);
+            return request(app)
+              .get(resourcePath)
+              .expect(404)
+              .expect(response => {
+                console.log(response);
+              });
+          });
+      });
+
+      it('returns 404 with invalid id', () => {
+        return request(app)
+          .delete('/api/notes/oops')
+          .expect(404);
+      });
+
+      it('returns 404 with valid but missing id', () => {
+        return request(app)
+          .delete('/api/notes/deadbeefdeadbeefdeadbeef')
+          .expect(404);
+      });
     });
   });
 });
