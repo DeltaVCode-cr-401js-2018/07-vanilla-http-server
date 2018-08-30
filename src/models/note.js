@@ -15,5 +15,8 @@ const Note = mongoose.models.note ||
   // Otherwise, create a new note schema
   mongoose.model('note', noteSchema);
 
+// For models middleware
+Note.route = 'notes';
+
 // Export our note constructor
 export default Note;
