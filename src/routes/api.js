@@ -5,6 +5,10 @@ const router = express.Router();
 
 export default router;
 
+import modelFinder from '../lib/middleware/models';
+// Only populate req.Model for API requests
+router.param('model', modelFinder);
+
 // Get all notes
 router.get('/api/:model', (req, res, next) => {
   req.Model.find({})

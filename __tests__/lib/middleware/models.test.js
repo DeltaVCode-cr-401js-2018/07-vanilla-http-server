@@ -13,6 +13,7 @@ describe('Model Finder Middleware', () => {
     let res = {};
     let next = () => {
       expect(req.Model).toBeDefined();
+      expect(req.Model.modelName).toBe('note');
       done();
     };
 

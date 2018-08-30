@@ -5,7 +5,6 @@ import morgan from 'morgan';
 
 import errorMiddleware from './lib/middleware/error';
 import json404 from './lib/middleware/json-404';
-import modelFinder from './lib/middleware/models';
 
 const app = express();
 
@@ -49,9 +48,6 @@ app.post('/api/hello', (req, res) => {
     message: `Hello, ${req.body.name}!`,
   });
 });
-
-// Only populate req.Model for API requests
-app.use('/api/*', modelFinder);
 
 // Note: previously this modified our global router
 // require('./routes/api');
