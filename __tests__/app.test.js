@@ -111,6 +111,18 @@ describe('app', () => {
         });
     });
 
+    it('returns 404 for GET /api/notes/:id with invalid id', () => {
+      return request(app)
+        .get('/api/notes/oops')
+        .expect(404);
+    });
+
+    it('returns 404 for GET /api/notes/:id with valid but missing id', () => {
+      return request(app)
+        .get('/api/notes/deadbeefdeadbeefdeadbeef')
+        .expect(404);
+    });
+
     it('returns 400 for POST /api/notes without body', () => {
       return request(app)
         .post('/api/notes')

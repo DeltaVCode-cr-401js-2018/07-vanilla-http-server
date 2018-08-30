@@ -33,10 +33,31 @@ router.post('/api/:model', (req, res) => {
 });
 
 // Get an individual note
-router.get('/api/:model/:id', (req, res) => {
+router.get('/api/:model/:id', (req, res, next) => {
   return req.Model.findById(req.params.id)
     .then(model => {
+      if (model === null) {
+        // 404 Option 1:
+        res.sendStatus(404);
+        // apparently this works (without return)?
+        res.end();
+        // but we should return anyway to skip extra work
+        return;
+      }
       res.json(model);
+    })
+    .catch(err => {
+      // Could not convert to ObjectId
+      if (err.name === 'CastError') {
+        // 404 Option 2:
+        // Preferred for 404 because it lets the rest of the
+        // express middelware pipeline do its thing,
+        // e.g. respond with JSON or HTML
+        next();
+      } else {
+        // Do whatever we do for real errors
+        next(err);
+      }
     });
 });
 
