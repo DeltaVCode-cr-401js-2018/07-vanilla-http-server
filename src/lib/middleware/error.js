@@ -8,6 +8,14 @@ export default (err, req, res, next) => {
     return;
   }
 
+  if (err.name === 'ValidationError') {
+    res.statusCode = 400;
+    res.json({
+      message: err.message,
+    });
+    return;
+  }
+
   debug(err);
 
   if (req.headers['accept'] !== 'application/json') {

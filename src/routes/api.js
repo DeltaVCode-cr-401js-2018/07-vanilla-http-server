@@ -18,8 +18,8 @@ router.get('/api/:model', (req, res, next) => {
 });
 
 // Create a note
-router.post('/api/:model', (req, res) => {
-  if (!req.body || !req.body.title) {
+router.post('/api/:model', (req, res, next) => {
+  if (!req.body) {
     res.send(400);
     res.end();
     return;
@@ -29,7 +29,8 @@ router.post('/api/:model', (req, res) => {
   newModel.save()
     .then(saved => {
       res.json(saved);
-    });
+    })
+    .catch(next);
 });
 
 // Get an individual note

@@ -135,7 +135,11 @@ describe('app', () => {
       return request(app)
         .post('/api/notes')
         .send({})
-        .expect(400);
+        .expect(400)
+        .expect(response => {
+          expect(response.body.message)
+            .toBe('note validation failed: title: Path `title` is required.');
+        });
     });
 
     it('can POST /api/notes to create note', () => {
