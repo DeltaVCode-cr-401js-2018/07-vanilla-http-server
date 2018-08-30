@@ -8,6 +8,7 @@ const noteSchema = Schema({
   content: { type: String },
   created: { type: Date, required: true, default: Date.now },
   completed: { type: Boolean, required: true, default: false },
+  list: { type: Schema.Types.ObjectId, ref: 'list' },
 });
 
 // If Mongoose already has note defined, use it as-is
